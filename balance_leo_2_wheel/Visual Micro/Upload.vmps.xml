@@ -1,0 +1,37 @@
+<VisualMicro>
+  <Program Name="balance_leo_2_wheel" Ext=".ino" Location="C:\Users\Tasos\Documents\Arduino\balance_leo_2_wheel">
+    <Debug DebugMode="Full" DebugEnabled="1" />
+    <Compile IsDebugStart="1" CompilerErrors="0" ConfigurationName="Debug" StopOnError="False" OptimiseLibs="True" OptimiseCore="True" BuildPath="C:\Users\Tasos\AppData\Local\VMicro\Arduino\Builds\balance_leo_2_wheel\uno" SketchName="balance_leo_2_wheel" ProjectMacrosHaveChanged="1" McuMacrosHaveChanged="1" ReportDigitalPins="0" ReportAnalogPins="0" ReportI2C="0" ReportFreeMemory="0" IncludeDebug="1" LastDebugPreProcessorDefinitions="VM_DEBUG;VM_DEBUG_ENABLE 1;VM_DEBUG_BANDWIDTH_THROTTLE_MS 50;VM_DEBUGGER_TYPE_HARDWARESERIAL 0;VM_DEBUGGER_TYPE_SOFTWARESERIAL 1;VM_DEBUGGER_TYPE_FASTSERIAL 2;VM_DEBUGGER_TYPE_USB 3;VM_DEBUGGER_TYPE_TEENSY 4;VM_DEBUGGER_TYPE_UART 5;VM_DEBUGGER_TYPE_USART 6;VM_DEBUGGER_TYPE_USBSERIAL 7;VM_DEBUGGER_TYPE_TTYUART 8;VM_DEBUGGER_TYPE_NET_CONSOLE 9;VM_DEBUGGER_TYPE VM_DEBUGGER_TYPE_HARDWARESERIAL;" IncludesDebug="1" IsCompiled="1" />
+    <Platform Name="arduino10x" Package="arduino" Platform="avr" Architecture="avr">
+      <Board Name="uno" Description="Arduino Uno" CoreFolder="C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino" VariantFullPath="C:\Program Files (x86)\Arduino\hardware\arduino\variants\standard" McuIdePath="C:\Program Files (x86)\Arduino" McuSketchBookPath="C:\Users\Tasos\Documents\Arduino" name="Arduino Uno" upload.protocol="arduino" upload.maximum_size="32256" upload.speed="115200" bootloader.low_fuses="0xff" bootloader.high_fuses="0xde" bootloader.extended_fuses="0x05" bootloader.path="optiboot" bootloader.file="optiboot_atmega328.hex" bootloader.unlock_bits="0x3F" bootloader.lock_bits="0x0F" build.mcu="atmega328p" build.f_cpu="16000000L" build.core="arduino" build.variant="standard" runtime.ide.path="C:\Program Files (x86)\Arduino" build.system.path="C:\Program Files (x86)\Arduino\hardware\arduino\system" runtime.ide.version="105" originalid="uno" vm.platform.root.path="C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino10x" build.core.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino" build.core.parentfolder.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino\cores" build.core.coresparentfolder.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino" vm.core.include="arduino.h" ide.hint="Arduino 0023 and 1.0.x Ide" ide.location.key="Arduino" ide.location.ide.winreg="Arduino 1.0.x Application" ide.location.sketchbook.winreg="Arduino 1.0.x Sketchbook" ide.location.sketchbook.preferences="sketchbook.path" ide.location.sketchbook.default="%MYDOCUMENTS%\arduino" ide.location.preferences="%VM_APPDATA_ROAMING%\arduino\preferences.txt" ide.default.package="arduino" ide.default.platform="avr" ide.multiplatform="true" ide.includes="arduino.h" ide.platformswithoutpackage="true" ide.includes.fallback="wprogram.h" ide.extension="ino" ide.extension.fallback="pde" ide.versionLTEQ="149" ide.exe="arduino.exe" ide.hosts="atmel" ide.url="http://arduino.cc/en/Main/Software" vm.debug="true" software="ARDUINO" ide.appid="arduino10x" location.sketchbook="C:\Users\Tasos\Documents\Arduino" build.board="AVR_UNO" vm.boardsource.path="C:\Program Files (x86)\Arduino\hardware\arduino" vm.platformname.name="avr" build.arch="AVR" build.variant.vmresolved="C:\Program Files (x86)\Arduino\hardware\arduino\variants\standard" vm.runtime.compiler.showwarnings="false" />
+    </Platform>
+    <VCCodeModel>
+      <VCCodeMacros />
+    </VCCodeModel>
+    <BreakPoints>
+      <BreakPoint Index="1" Name="balance_leo_2_wheel.ino, line 122" Id="d5097b58-ea22-46f1-968c-ecbbaca3a2e9" Enabled="1" Message="{millis()}" MessageTextType="2" PreProcessedMessage="{0}" Condition="millis()&gt;0 || millis()&gt;1" ConditionType="1" CurrentHits="0" File="c:\users\tasos\documents\arduino\balance_leo_2_wheel\balance_leo_2_wheel.ino" FileLine="122" FileColumn="1" FunctionName="" FunctionLineOffset="1" FunctionColumnOffset="1" HitCountTarget="250" HitCountType="4" Language="C++" LocationType="3" Tag="&lt;vmbp Id='555041ad-c097-42e5-bfd7-0f93e0dec5cc'/&gt;" Type="1" ToString="System.__ComObject" BreakWhenHit="1">
+        <Source>115	    // (if it's going to break, usually the code will be 1)
+116	    Serial.print(F("DMP Initialization failed (code "));
+117	    Serial.print(devStatus);
+118	    Serial.println(F(")"));
+119	  }
+120	}
+121	
+--&gt;122	void loop()
+123	{
+124	  
+125	  // if programming failed, don't try to do anything
+126	  if (!dmpReady) return;
+127	  while (!mpuInterrupt &amp;&amp; fifoCount &lt; packetSize) {
+128	    
+129	  }
+130	  // reset interrupt flag and get INT_STATUS byte
+131	  mpuInterrupt = false;
+</Source>
+        <MessageVariables>
+          <MessageVariable Name="millis()" Index="1" />
+        </MessageVariables>
+      </BreakPoint>
+    </BreakPoints>
+  </Program>
+</VisualMicro>
