@@ -68,6 +68,7 @@ void dim_check()
   }
 }        
 
+//setup
 void setup() 
 {
   // initialize serial:

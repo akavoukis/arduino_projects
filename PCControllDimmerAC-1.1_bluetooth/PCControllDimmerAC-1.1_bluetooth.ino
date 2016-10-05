@@ -1,11 +1,18 @@
 #include <TimerOne.h>
 #include <EEPROM.h>
+#include <Wire.h>  // Comes with Arduino IDE
+#include <LiquidCrystal_I2C.h>
 
 
 //#include <cstring>
 //#include <iostream>
 
-//#include <TimerOne.h>           // Avaiable from http://www.arduino.cc/playground/Code/Timer1
+// set the LCD address to 0x27 for a 16 chars 2 line display
+// A FEW use address 0x3F
+// Set the pins on the I2C chip used for LCD connections:
+//                    addr, en,rw,rs,d4,d5,d6,d7,bl,blpol
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I2C address
+
 
 volatile int i=0;               // Variable to use as a counter
 volatile int i2=0;
@@ -73,23 +80,55 @@ void setup()
 {
   // initialize serial:
   Serial.begin(9600);
-  Serial1.begin(9600);
   // reserve 200 bytes for the inputString:
   pinMode(AC_pin, OUTPUT);                          // Set the Triac pin as output
   pinMode(AC_pin2, OUTPUT);                          // Set the Triac pin as output
 
-  Serial1.println("Serial started");
+  Serial.println("Serial started");
   OnPeak = EEPROM.read(EEPROMaddr);
   OffPeak = EEPROM.read(EEPROMaddr+8);
-  Serial1.print("On peak: ");
-  Serial1.println(OnPeak);
-  Serial1.print("Off peak: ");
-  Serial1.println(OffPeak);
-    
-  attachInterrupt(0, zero_cross_detect, RISING);   // Attach an Interupt to Pin 2 (interupt 0) for Zero Cross Detection
+  Serial.print("On peak: ");
+  Serial.println(OnPeak);
+  Serial.print("Off peak: ");
+  Serial.println(OffPeak);
+  lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
+  lcd.backlight();
+
+  attachInterrupt(digitalPinToInterrupt(2), zero_cross_detect, RISING);   // Attach an Interupt to Pin 2 (interupt 0) for Zero Cross Detection
 
   Timer1.initialize(freqStep);                      // Initialize TimerOne library for the freq we need
   Timer1.attachInterrupt(dim_check, freqStep);   
+
+  lcd.setCursor(0,0);
+  lcd.print("Arduino Lights");
+  delay(1000);
+  lcd.setCursor(0,1);
+  lcd.print("Booting");
+  delay(1000);
+  lcd.clear();
+  
+  String OnString="On peak: ";
+  OnString += OnPeak;
+  lcd.setCursor(0,0);
+  lcd.print(OnString);
+  
+  String OffString="Off peak: ";
+  OffString += OffPeak;
+  lcd.setCursor(0,1);
+  lcd.print(OffString);
+
+  delay(1000);
+
+  lcd.clear();
+  OnString="Light1: ";
+  OnString += dim;
+  lcd.setCursor(0,0);
+  lcd.print(OnString);
+  
+  OffString="Light2: ";
+  OffString += dim2;
+  lcd.setCursor(0,1);
+  lcd.print(OffString);
 }
 
 void loop() 
@@ -105,22 +144,10 @@ void loop()
       Volume[2] = inChar[6];
 
       VolumeLevel = atoi(Volume);
-
-      //Serial.print("volume level after atoi before constrain: ");
-      //Serial.println(VolumeLevel);
-      
       VolumeLevel = constrain(VolumeLevel, 0, 100);
-
-      //Serial.print("volume level: ");
-      //Serial.println(VolumeLevel);
       
       dim = map (VolumeLevel,0,100,OffPeak,OnPeak);
-      //Serial.print("Setting dim1 to ");
-      //Serial.println(dim);
       dim = 125 - dim;
-      //dim = constrain(dim, OffPeak, OnPeak);
-      //Serial.print("Setting dim1 to ");
-      //Serial.println(dim);
     }
     if (inChar[0] == 'V' && inChar[1] == '2' && inChar[2] == ':')
     {
@@ -135,7 +162,6 @@ void loop()
       dim2 = map (VolumeLevel,0,100,OffPeak,OnPeak);
       
       dim2 = 125 - dim2;
-      //dim2 = constrain(dim, OffPeak, OnPeak);
     }
     else if (inChar[0] == 'P' && inChar[1] == 'N')
     {
@@ -147,13 +173,6 @@ void loop()
       
       int OnPeak_premap = atoi(OnPeakChar);
       OnPeak = map (OnPeak_premap,0,100,0,125);
-      //EEPROM.write(EEPROMaddr, OnPeak);
-      //Serial.print("setting Peak on:");
-      //Serial.println(OnPeak);
-
-      //Serial.print("EEPROM read Peak on:");
-      //int temp = EEPROM.read(EEPROMaddr);
-      //Serial.println(temp);
     }
     else if (inChar[0] == 'P' && inChar[1] == 'F')
     {
@@ -165,40 +184,37 @@ void loop()
       int OffPeak_premap = atoi(OffPeakChar);
       OffPeak = map (OffPeak_premap,0,100,0,125);
       EEPROM.write(EEPROMaddr+8, OffPeak);
-
-      //Serial.print("setting Peak off:");
-      //Serial.println(OffPeak);
-
-      //Serial.print("EEPROM read Peak off:");
-      //int temp = EEPROM.read(EEPROMaddr+8);
-      //Serial.println(temp);
     }
     else if  (inChar[0] == 'O' && inChar[1] == 'N' && inChar[2] == ':' && inChar[4] == '1' )
     {
       dim = 0;
-      //Serial.print("Setting dim1 to ");
-      //Serial.println(dim);
     }
     else if  (inChar[0] == 'O' && inChar[1] == 'F' && inChar[3] == ':' && inChar[5] == '1')
     {
       dim = 150;
-      //Serial.print("Setting dim1 to ");
-      //Serial.println(dim);
     }
     else if  (inChar[0] == 'O' && inChar[1] == 'N' && inChar[2] == ':' && inChar[4] == '2')
     {
       dim2 = 0;
-      //Serial.print("Setting dim2 to ");
-      //Serial.println(dim2);
     }
     else if  (inChar[0] == 'O' && inChar[1] == 'F' && inChar[3] == ':' && inChar[5] == '2')
     {
       dim2 = 150;
-      //Serial.print("Setting dim2 to ");
-      //Serial.println(dim2);
     }
     stringComplete = false;
     inChar[0]='\0';
+
+    lcd.clear();
+    String OnString="Light1: ";
+    OnString += dim;
+    lcd.setCursor(0,0);
+    lcd.print(OnString);
+    
+    String OffString="Light2: ";
+    OffString += dim2;
+    lcd.setCursor(0,1);
+    lcd.print(OffString);
+
   }
 }
 
@@ -210,13 +226,13 @@ void loop()
  response.  Multiple bytes of data may be available.
  */
 
-void serialEvent1() 
+void serialEvent() 
 {
-  while (Serial1.available()) 
+  while (Serial.available()) 
   {
     if(index < 19) // One less than the size of the array
     {
-      ReadedChar = (char)Serial1.read(); // Read a character
+      ReadedChar = (char)Serial.read(); // Read a character
       //debug incoming data from serial1 to serial
       Serial.write(ReadedChar);
       inChar[index] = ReadedChar; // Store it
