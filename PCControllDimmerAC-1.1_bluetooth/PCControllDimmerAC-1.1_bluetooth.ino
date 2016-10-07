@@ -23,7 +23,7 @@ int AC_pin2 = 12;                // Output to Opto Triac
 volatile int dim = 50;                    // Dimming level (0-128)  0 = on, 128 = 0ff
 volatile int dim2 = 50;                    // Dimming level (0-128)  0 = on, 128 = 0ff
 
-volatile int OnPeak = 125;
+volatile int OnPeak = 128;
 volatile int OffPeak = 0;
 
 int freqStep = 70;    // This is the delay-per-brightness step in microseconds.
@@ -31,8 +31,12 @@ boolean stringComplete = false;  // whether the string is complete
 char inChar[20]; // Allocate some space for the string
 char ReadedChar;
 byte index = 0; // Index into array; where to store the character
-int VolumeLevel=0;
+int VolumeLevel1=0;
+int VolumeLevel2=0;
 int EEPROMaddr = 0;
+
+//LCD block all pixels on
+byte block[8] = {  B111111,  B11111,  B11111,  B11111,  B11111,  B11111,  B11111,};
 
 void zero_cross_detect() 
 {    
@@ -119,16 +123,17 @@ void setup()
 
   delay(1000);
 
-  lcd.clear();
-  OnString="Light1: ";
-  OnString += dim;
-  lcd.setCursor(0,0);
-  lcd.print(OnString);
-  
-  OffString="Light2: ";
-  OffString += dim2;
-  lcd.setCursor(0,1);
-  lcd.print(OffString);
+    lcd.clear();
+
+    lcd.setCursor(0,0);
+    lcd.write("L1:   ");
+    int bar1 = 50;
+    for (int i = 0; i<bar1/10;i++) {  lcd.write(byte(0)); }
+
+    lcd.setCursor(0,1);
+    lcd.write("L2:   ");
+    int bar2 = 50;
+    for (int i = 0; i<bar2/10;i++) {  lcd.write(byte(0)); }
 }
 
 void loop() 
@@ -143,11 +148,15 @@ void loop()
       Volume[1] = inChar[5];
       Volume[2] = inChar[6];
 
-      VolumeLevel = atoi(Volume);
-      VolumeLevel = constrain(VolumeLevel, 0, 100);
-      
-      dim = map (VolumeLevel,0,100,OffPeak,OnPeak);
-      dim = 125 - dim;
+      VolumeLevel1 = atoi(Volume);
+      VolumeLevel1 = constrain(VolumeLevel1, 0, 100);
+          Serial.println(VolumeLevel1);
+
+      dim = map (VolumeLevel1,0,100,OffPeak,OnPeak);
+                Serial.println(dim);
+
+      dim = 128 - dim;
+      Serial.println(dim);
     }
     if (inChar[0] == 'V' && inChar[1] == '2' && inChar[2] == ':')
     {
@@ -156,12 +165,12 @@ void loop()
       Volume[1] = inChar[5];
       Volume[2] = inChar[6];
 
-      VolumeLevel = atoi(Volume);
-      VolumeLevel = constrain(VolumeLevel, 0, 100);
+      VolumeLevel2 = atoi(Volume);
+      VolumeLevel2 = constrain(VolumeLevel2, 0, 100);
 
-      dim2 = map (VolumeLevel,0,100,OffPeak,OnPeak);
+      dim2 = map (VolumeLevel2,0,100,OffPeak,OnPeak);
       
-      dim2 = 125 - dim2;
+      dim2 = 128 - dim2;
     }
     else if (inChar[0] == 'P' && inChar[1] == 'N')
     {
@@ -172,7 +181,9 @@ void loop()
       OnPeakChar[2] = inChar[6];
       
       int OnPeak_premap = atoi(OnPeakChar);
-      OnPeak = map (OnPeak_premap,0,100,0,125);
+      OnPeak = map (OnPeak_premap,0,100,0,128);
+      EEPROM.write(EEPROMaddr, OnPeak);
+
     }
     else if (inChar[0] == 'P' && inChar[1] == 'F')
     {
@@ -182,7 +193,7 @@ void loop()
       OffPeakChar[2] = inChar[6];
 
       int OffPeak_premap = atoi(OffPeakChar);
-      OffPeak = map (OffPeak_premap,0,100,0,125);
+      OffPeak = map (OffPeak_premap,0,100,0,128);
       EEPROM.write(EEPROMaddr+8, OffPeak);
     }
     else if  (inChar[0] == 'O' && inChar[1] == 'N' && inChar[2] == ':' && inChar[4] == '1' )
@@ -205,17 +216,29 @@ void loop()
     inChar[0]='\0';
 
     lcd.clear();
-    String OnString="Light1: ";
-    OnString += dim;
     lcd.setCursor(0,0);
-    lcd.print(OnString);
+    lcd.write("L1:   ");
+    int bar_dim = 0;
     
-    String OffString="Light2: ";
-    OffString += dim2;
+    bar_dim = map (dim,128,0,0,100);
+    bar_dim = roundToTenths(bar_dim);
+    for (int i = 0; i<bar_dim/10;i++) {  lcd.write(byte(0)); }
+
+
     lcd.setCursor(0,1);
-    lcd.print(OffString);
+    lcd.write("L2:   ");
+    
+    bar_dim = map (dim2,128,0,0,100);
+    bar_dim = roundToTenths(bar_dim);
+    for (int i = 0; i<bar_dim/10;i++) {  lcd.write(byte(0)); }
 
   }
+}
+
+float roundToTenths(float x)
+{
+    x /=10;
+    return floor(x + 0.5) * 10;
 }
 
 /*
@@ -247,7 +270,6 @@ void serialEvent()
     {
       index = 0;
       stringComplete = true;
-
     }
   }
 }
