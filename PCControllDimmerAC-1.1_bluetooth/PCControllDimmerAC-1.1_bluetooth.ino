@@ -97,6 +97,7 @@ void setup()
   Serial.println(OffPeak);
   lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
   lcd.backlight();
+  lcd.createChar(0, block);
 
   attachInterrupt(digitalPinToInterrupt(2), zero_cross_detect, RISING);   // Attach an Interupt to Pin 2 (interupt 0) for Zero Cross Detection
 
