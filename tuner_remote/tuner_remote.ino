@@ -9,7 +9,7 @@
 #include <IRremote.h>
 #include "Keyboard.h"
 
-int RECV_PIN = 11;
+int RECV_PIN = 10;
 
 IRrecv irrecv(RECV_PIN);
 
@@ -36,6 +36,7 @@ void loop() {
       // button 2
       case 0x1D5:
       case 0x9D5:
+        Keyboard.press(KEY_UP_ARROW);
         break;
 
       // button 3
@@ -70,6 +71,7 @@ void loop() {
       // button 8
       case 0x1E1:
       case 0x9E1:
+        Keyboard.press(KEY_DOWN_ARROW);
         break; 
         
       // button 9
@@ -103,6 +105,7 @@ void loop() {
       // button pinnacle
       case 0x1C1:
       case 0x9C1:
+        Keyboard.press('H');
         break; 
 
       // button volume up
@@ -148,6 +151,7 @@ void loop() {
       // button record
       case 0x1F6:
       case 0x9F6:
+        Keyboard.press('K');
         break;
 
       // button stop
@@ -159,6 +163,7 @@ void loop() {
       // button help
       case 0x1FF:
       case 0x9FF:
+        Keyboard.press('O');
         break;
     }
     Keyboard.releaseAll();
