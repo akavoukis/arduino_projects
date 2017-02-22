@@ -16,6 +16,9 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 int last_received;
 int same_counter=0;
+unsigned long currentMillis = millis();
+unsigned long previousMillis = 0;        // will store last time LED was updated
+const long interval = 1000;
 
 void setup()
 {
@@ -25,8 +28,15 @@ void setup()
 }
 
 void loop() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    last_received = 0x00;
+    same_counter=0;
+  }
+  
   if (irrecv.decode(&results)) 
   { 
+    previousMillis = currentMillis;
     results.value = results.value & 0xFF;
     if (last_received == results.value) 
       same_counter++ ;
@@ -82,7 +92,7 @@ void loop() {
         // source menu
         case 0xE4:
           // open context menu
-          Keyboard.press('C');      
+          Keyboard.press('c');      
           break; 
            
         // button 0
@@ -91,7 +101,7 @@ void loop() {
   
         // button T
         case 0xEA:
-            Keyboard.press('T');
+            Keyboard.press('t');
           break; 
           
         // button Mute
@@ -111,7 +121,7 @@ void loop() {
   
         // button volume down
         case 0xC9:
-          Keyboard.press('- ');
+          Keyboard.press('-');
           break;
   
         // button program up
@@ -143,17 +153,17 @@ void loop() {
   
         // button record
         case 0xF6:
-          Keyboard.press('K');
+          Keyboard.press('k');
           break;
   
         // button stop
         case 0xFC:
-          Keyboard.press('X');
+          Keyboard.press('x');
           break;
   
         // button help
         case 0xFF:
-          Keyboard.press('O');
+          Keyboard.press('o');
           break;
       }
       Keyboard.releaseAll();
