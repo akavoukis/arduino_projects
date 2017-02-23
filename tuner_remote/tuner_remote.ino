@@ -37,11 +37,17 @@ void loop() {
   if (irrecv.decode(&results)) 
   { 
     previousMillis = currentMillis;
-    if (results.value & 0xFFF100 == 0x100)
-      results.value = results.value & 0xFF;
-    if (results.value & 0xFFF900 == 0x900)
-      results.value = results.value & 0xFF;
-            
+    int test_controller = results.value & 0xFFF100;
+  
+    if (test_controller == 0x100)
+    {
+      results.value &= 0x00FF;
+    }
+    else if (test_controller == 0x900)
+    {
+      results.value &= 0x00FF;
+    } 
+    
     if (last_received == results.value) 
       same_counter++ ;
     else
