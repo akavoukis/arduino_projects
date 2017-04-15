@@ -97,6 +97,9 @@ void loop() {
           
         // button 9
         case 0xD2:
+          Keyboard.press(KEY_LEFT_CTRL);
+          Keyboard.press(KEY_LEFT_ALT);
+          Keyboard.press(KEY_BACKSPACE);
           break;  
   
         // source menu
