@@ -67,7 +67,11 @@ void loop() {
           break;
   
         // button 3
+        // switch pulse audio sinks
         case 0xD0:
+          Keyboard.press(KEY_LEFT_CTRL);
+          Keyboard.press(KEY_LEFT_ALT);
+          Keyboard.press(KEY_BACKSPACE);
           break;
         
         // button 4
@@ -96,6 +100,7 @@ void loop() {
           break; 
           
         // button 9
+        //kill kodi
         case 0xD2:
           Keyboard.press(KEY_LEFT_CTRL);
           Keyboard.press(KEY_LEFT_ALT);
@@ -176,7 +181,6 @@ void loop() {
   
         // button help
         case 0xFF:
-          Keyboard.press('o');
           break;
       }
       Keyboard.releaseAll();
